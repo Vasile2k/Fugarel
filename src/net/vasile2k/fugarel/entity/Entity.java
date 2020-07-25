@@ -6,6 +6,8 @@ public abstract class Entity {
 
     protected float x;
     protected float y;
+    protected float width;
+    protected float height;
 
     protected float velX;
     protected float velY;
@@ -46,5 +48,19 @@ public abstract class Entity {
         this.velY = velY;
     }
 
+    public float getWidth() {
+        return width;
+    }
 
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
 }

@@ -14,5 +14,5 @@ public abstract class Player extends Entity {
      * Render the player to it's relative position in world
      * @param camera
      */
-    public abstract void render(Camera camera);
+    public abstract void render(Graphics g, Camera camera);
 }

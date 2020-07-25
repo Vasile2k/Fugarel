@@ -9,10 +9,12 @@ import net.vasile2k.fugarel.entity.Player;
 import net.vasile2k.fugarel.entity.RemotePlayer;
 import net.vasile2k.fugarel.map.Block;
 import net.vasile2k.fugarel.map.Map;
+import net.vasile2k.fugarel.window.Window;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,6 +50,12 @@ public class SceneGame extends Scene {
         mapToBlocks.put(Color.BLUE, 3);
         this.level = Map.loadLevel("/res/levels/level.png", this.blocks, mapToBlocks);
 
+        this.camera = new Camera();
+        this.player = new LocalPlayer("Scarbin");
+        this.player.setX(100.0F);
+        this.player.setY(100.0F);
+        this.remotePlayers = new ArrayList<>();
+
         System.out.println("Entering game on " + this.ip + ":" + this.port);
         this.connect();
     }
@@ -59,7 +67,15 @@ public class SceneGame extends Scene {
 
     @Override
     public void repaint(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
 
+        this.level.render(g, this.camera);
+        this.player.render(g, this.camera);
+
+        for(RemotePlayer rp: this.remotePlayers){
+            rp.render(g, this.camera);
+        }
     }
 
     public void connect(){

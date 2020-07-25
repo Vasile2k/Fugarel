@@ -51,4 +51,11 @@ public class Block {
         return blocks;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Image getBlockTexture() {
+        return blockTexture;
+    }
 }

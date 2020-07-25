@@ -18,6 +18,15 @@ public class GameClient implements Runnable {
         this.window.setScene(this.currentScene);
     }
 
+    public void stop(){
+        this.isRunning = false;
+    }
+
+    public void requestNewScene(Scene newScene){
+        this.currentScene = newScene;
+        this.window.setScene(this.currentScene);
+    }
+
     @Override
     public void run() {
         System.out.println("Starting game...");

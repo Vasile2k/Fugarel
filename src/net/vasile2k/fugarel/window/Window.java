@@ -4,6 +4,7 @@ import net.vasile2k.fugarel.window.scenes.Scene;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class Window {
 
@@ -31,6 +32,62 @@ public class Window {
                 scene.repaint(g);
             }
         };
+
+        this.frame.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                scene.mouseClicked(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                scene.mousePressed(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                scene.mouseReleased(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                scene.mouseEntered(e);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                scene.mouseExited(e);
+            }
+        });
+
+        this.frame.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                scene.mouseDragged(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                scene.mouseMoved(e);
+            }
+        });
+
+        this.frame.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                scene.keyTyped(e);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                scene.keyPressed(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                scene.keyReleased(e);
+            }
+        });
 
         this.panel.setSize(frameSize);
         this.frame.add(this.panel);

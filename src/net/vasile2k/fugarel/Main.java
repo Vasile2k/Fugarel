@@ -5,8 +5,13 @@ import java.util.List;
 
 public class Main {
 
+    private static Runnable game = null;
+
+    public static Runnable getCurrentGame(){
+        return game;
+    }
+
     public static void main(String[] args){
-        Runnable game = null;
 
         List<String> argsList = Arrays.asList(args);
 

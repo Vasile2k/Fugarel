@@ -1,5 +1,6 @@
 package net.vasile2k.fugarel.window.scenes;
 
+import javafx.scene.input.KeyCode;
 import net.vasile2k.fugarel.GameClient;
 import net.vasile2k.fugarel.Main;
 import net.vasile2k.fugarel.window.Window;
@@ -13,8 +14,11 @@ public class SceneConnect extends Scene {
 
     private Button playButton;
 
+    private String ipOfServer;
+
     public SceneConnect(){
-        this.playButton = new Button(415, 450, "play", () -> { });
+        this.ipOfServer = "";
+        this.playButton = new Button(415, 450, "play", () -> ((GameClient)Main.getCurrentGame()).requestNewScene(new SceneGame(this.ipOfServer)));
     }
 
     @Override
@@ -24,9 +28,18 @@ public class SceneConnect extends Scene {
 
     @Override
     public void repaint(Graphics g) {
+        // background
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
 
+        // IP input box
+        g.setColor(Color.GRAY);
+        g.setFont(new Font("Consolas", Font.BOLD, 25));
+        g.drawString("Type IP here:", 420, 100);
+        g.drawRect(390, 130, 500, 50);
+        g.drawString(ipOfServer, Window.FRAME_WIDTH/2 - ipOfServer.length()*28/4, 165);
+
+        // button
         this.playButton.draw(g);
     }
 
@@ -34,6 +47,12 @@ public class SceneConnect extends Scene {
     public void keyTyped(KeyEvent e) {
         if(e.getKeyChar() == KeyEvent.VK_ESCAPE){
             ((GameClient) Main.getCurrentGame()).requestNewScene(new SceneMenu());
+        }else{
+            if("0123456789.:".indexOf((int)e.getKeyChar()) != -1){
+                ipOfServer += e.getKeyChar();
+            }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && ipOfServer.length() > 0){
+                ipOfServer = ipOfServer.substring(0, ipOfServer.length() - 1);
+            }
         }
     }
 

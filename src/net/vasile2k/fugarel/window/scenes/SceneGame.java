@@ -3,15 +3,32 @@ package net.vasile2k.fugarel.window.scenes;
 import net.vasile2k.fugarel.GameClient;
 import net.vasile2k.fugarel.GameServer;
 import net.vasile2k.fugarel.Main;
+import net.vasile2k.fugarel.entity.Camera;
+import net.vasile2k.fugarel.entity.LocalPlayer;
+import net.vasile2k.fugarel.entity.Player;
+import net.vasile2k.fugarel.entity.RemotePlayer;
+import net.vasile2k.fugarel.map.Block;
+import net.vasile2k.fugarel.map.Map;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 public class SceneGame extends Scene {
 
     private String ip;
     private int port;
+
+    private Block[] blocks;
+    private Map level;
+
+    private Camera camera;
+    private LocalPlayer player;
+
+    private List<RemotePlayer> remotePlayers;
 
     public SceneGame(String serverIp){
         if(serverIp.contains(":")){
@@ -21,6 +38,16 @@ public class SceneGame extends Scene {
             this.ip = serverIp;
             this.port = GameServer.DEFAULT_PORT;
         }
+
+        List<Block> _blocks = Block.loadAllBlocks();
+        this.blocks = new Block[_blocks.size()];
+        _blocks.toArray(this.blocks);
+        HashMap<Color, Integer> mapToBlocks = new HashMap<>();
+        mapToBlocks.put(Color.RED, 1);
+        mapToBlocks.put(Color.GREEN, 2);
+        mapToBlocks.put(Color.BLUE, 3);
+        this.level = Map.loadLevel("/res/levels/level.png", this.blocks, mapToBlocks);
+
         System.out.println("Entering game on " + this.ip + ":" + this.port);
         this.connect();
     }

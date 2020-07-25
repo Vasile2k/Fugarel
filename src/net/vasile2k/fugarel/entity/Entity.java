@@ -13,6 +13,7 @@ public abstract class Entity {
     public abstract void update();
 
     public abstract Image getImage();
+
     public float getX() {
         return x;
     }

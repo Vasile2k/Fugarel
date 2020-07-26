@@ -29,7 +29,7 @@ public class SceneGame extends Scene {
 
     private List<RemotePlayer> remotePlayers;
 
-    public SceneGame(String serverIp){
+    public SceneGame(String serverIp, String playerName){
         if(serverIp.contains(":")){
             this.ip = serverIp.split(":")[0];
             this.port = Integer.parseInt(serverIp.split(":")[1]);
@@ -48,7 +48,7 @@ public class SceneGame extends Scene {
         this.level = Map.loadLevel("/res/levels/level.png", this.blocks, mapToBlocks);
 
         this.camera = new Camera();
-        this.player = new LocalPlayer("Scarbin");
+        this.player = new LocalPlayer(playerName);
         this.player.setX(100.0F);
         this.player.setY(100.0F);
         this.remotePlayers = new ArrayList<>();

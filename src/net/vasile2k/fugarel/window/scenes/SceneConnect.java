@@ -15,10 +15,20 @@ public class SceneConnect extends Scene {
     private Button playButton;
 
     private String ipOfServer;
+    private String playerName;
+
+    private Rectangle ipInputArea;
+    private Rectangle nameInputArea;
+
+    private boolean ipInputSelected;
 
     public SceneConnect(){
         this.ipOfServer = "";
-        this.playButton = new Button(415, 450, "play", () -> ((GameClient)Main.getCurrentGame()).requestNewScene(new SceneGame(this.ipOfServer)));
+        this.playerName = "";
+        this.playButton = new Button(415, 450, "play", () -> ((GameClient)Main.getCurrentGame()).requestNewScene(new SceneGame(this.ipOfServer, this.playerName)));
+        this.ipInputArea = new Rectangle(390, 130, 500, 50);
+        this.nameInputArea = new Rectangle(390, 330, 500, 50);
+        this.ipInputSelected = true;
     }
 
     @Override
@@ -32,12 +42,19 @@ public class SceneConnect extends Scene {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
 
-        // IP input box
-        g.setColor(Color.GRAY);
         g.setFont(new Font("Consolas", Font.BOLD, 25));
-        g.drawString("Type IP here:", 420, 100);
-        g.drawRect(390, 130, 500, 50);
-        g.drawString(ipOfServer, Window.FRAME_WIDTH/2 - ipOfServer.length()*28/4, 165);
+
+        // IP input box
+        g.setColor(this.ipInputSelected ? Color.ORANGE : Color.GRAY);
+        g.drawString("Type IP here:", 420, this.ipInputArea.y - 30);
+        g.drawRect(this.ipInputArea.x, this.ipInputArea.y, this.ipInputArea.width, this.ipInputArea.height);
+        g.drawString(ipOfServer, Window.FRAME_WIDTH/2 - ipOfServer.length()*28/4, this.ipInputArea.y + 35);
+
+        // Name input box
+        g.setColor(!this.ipInputSelected ? Color.ORANGE : Color.GRAY);
+        g.drawString("Enter your name here:", 420, this.nameInputArea.y - 30);
+        g.drawRect(this.nameInputArea.x, this.nameInputArea.y, this.nameInputArea.width, this.nameInputArea.height);
+        g.drawString(playerName, Window.FRAME_WIDTH/2 - playerName.length()*28/4, this.nameInputArea.y + 35);
 
         // button
         this.playButton.draw(g);
@@ -48,10 +65,18 @@ public class SceneConnect extends Scene {
         if(e.getKeyChar() == KeyEvent.VK_ESCAPE){
             ((GameClient) Main.getCurrentGame()).requestNewScene(new SceneMenu());
         }else{
-            if("0123456789.:".indexOf((int)e.getKeyChar()) != -1){
-                ipOfServer += e.getKeyChar();
-            }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && ipOfServer.length() > 0){
-                ipOfServer = ipOfServer.substring(0, ipOfServer.length() - 1);
+            if(this.ipInputSelected){
+                if("0123456789.:".indexOf((int)e.getKeyChar()) != -1){
+                    ipOfServer += e.getKeyChar();
+                }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && ipOfServer.length() > 0){
+                    ipOfServer = ipOfServer.substring(0, ipOfServer.length() - 1);
+                }
+            }else{
+                if(Character.isLetter(e.getKeyChar())){
+                    playerName += e.getKeyChar();
+                }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && ipOfServer.length() > 0){
+                    playerName = playerName.substring(0, playerName.length() - 1);
+                }
             }
         }
     }
@@ -69,6 +94,11 @@ public class SceneConnect extends Scene {
     @Override
     public void mouseClicked(MouseEvent e) {
         this.playButton.mouseClicked(e);
+        if(this.ipInputArea.contains(e.getPoint())){
+            this.ipInputSelected = true;
+        }else if(this.nameInputArea.contains(e.getPoint())){
+            this.ipInputSelected = false;
+        }
     }
 
     @Override

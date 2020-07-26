@@ -66,7 +66,7 @@ public class Map {
                 if(blockId != 0){
                     int xPos = i * BLOCK_SIZE - (int)camera.getX();
                     int yPos = j * BLOCK_SIZE - (int)camera.getY();
-                    if(xPos >= 0 && xPos < Window.FRAME_WIDTH && yPos >= 0 && yPos < Window.FRAME_HEIGHT){
+                    if(xPos >= -BLOCK_SIZE && xPos < Window.FRAME_WIDTH && yPos >= 0 && yPos < Window.FRAME_HEIGHT){
                         g.drawImage(this.blocksById.get(blockId).getBlockTexture(), xPos, yPos, null);
                     }
                 }
@@ -74,4 +74,7 @@ public class Map {
         }
     }
 
+    public int[][] getBlockMap() {
+        return blockMap;
+    }
 }

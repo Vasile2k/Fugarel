@@ -3,10 +3,7 @@ package net.vasile2k.fugarel.window.scenes;
 import net.vasile2k.fugarel.GameClient;
 import net.vasile2k.fugarel.GameServer;
 import net.vasile2k.fugarel.Main;
-import net.vasile2k.fugarel.entity.Camera;
-import net.vasile2k.fugarel.entity.LocalPlayer;
-import net.vasile2k.fugarel.entity.Player;
-import net.vasile2k.fugarel.entity.RemotePlayer;
+import net.vasile2k.fugarel.entity.*;
 import net.vasile2k.fugarel.map.Block;
 import net.vasile2k.fugarel.map.Map;
 import net.vasile2k.fugarel.window.Window;
@@ -62,7 +59,28 @@ public class SceneGame extends Scene {
 
     @Override
     public void update() {
+        // update player
+        float playerNewX = this.player.getX() + this.player.getVelX();
+        float playerNewY = this.player.getY() + this.player.getVelY();
+        float playerVelY = this.player.getVelY();
+        playerVelY += 0.1F;
+        if(playerVelY > 10.0F){
+            playerVelY = 10.0F;
+        }
 
+        if(!CollisionHelper.playerIntersectsMap(this.player, this.level, playerNewX, playerNewY)){
+            this.player.setX(playerNewX);
+            this.player.setY(playerNewY);
+        }
+        this.player.setVelY(playerVelY);
+
+        // update camera
+        if(this.player.getX() < this.camera.getX() + Window.FRAME_WIDTH/4.0F){
+            this.camera.setX(this.camera.getX() - 1.0F);
+        }
+        if(this.player.getX() > this.camera.getX() + 3.0F*Window.FRAME_WIDTH/4.0F){
+            this.camera.setX(this.camera.getX() + 1.0F);
+        }
     }
 
     @Override
@@ -97,12 +115,22 @@ public class SceneGame extends Scene {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if(e.getKeyCode() == KeyEvent.VK_A){
+            this.player.setVelX(-2.0F);
+        }
+        if(e.getKeyCode() == KeyEvent.VK_D){
+            this.player.setVelX(2.0F);
+        }
+        if(e.getKeyCode() == KeyEvent.VK_SPACE && !this.player.isJumping){
+            this.player.setVelY(-7.0F);
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        if(e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D){
+            this.player.setVelX(0.0F);
+        }
     }
 
     @Override

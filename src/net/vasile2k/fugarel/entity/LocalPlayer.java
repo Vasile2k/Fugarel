@@ -7,6 +7,7 @@ import java.io.IOException;
 public class LocalPlayer extends Player {
 
     private Image playerTexture;
+    public boolean isJumping = false;
 
     public LocalPlayer(String name){
         super(name);
@@ -23,8 +24,9 @@ public class LocalPlayer extends Player {
     public void render(Graphics g, Camera camera) {
         g.setFont(new Font("Consolas", Font.BOLD, 25));
         g.setColor(Color.ORANGE);
-        g.drawString(this.name, (int)(this.x - camera.getX() + this.x/2.0F - this.name.length()*6.0F), (int)(this.y - camera.getY() - 25.0F));
+        g.drawString(this.name, (int)(this.x - camera.getX() + this.width/2.0F - this.name.length()*6.0F), (int)(this.y - camera.getY() - 25.0F));
         g.drawImage(this.playerTexture, (int)(this.x - camera.getX()), (int)(this.y - camera.getY()), null);
+//        g.drawRect((int)(this.x - camera.getX()), (int)(this.y - camera.getY()), (int)this.width, (int)this.height);
     }
 
     @Override

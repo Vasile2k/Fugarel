@@ -1,5 +1,7 @@
 package net.vasile2k.fugarel;
 
+import net.vasile2k.fugarel.networking.server.ServerMainThread;
+
 public class GameServer implements Runnable {
 
     public static final int DEFAULT_PORT = 669;
@@ -17,5 +19,8 @@ public class GameServer implements Runnable {
     @Override
     public void run() {
         System.out.println("Starting server on port " + port);
+        new ServerMainThread(this.port).run();
     }
 }
+
+

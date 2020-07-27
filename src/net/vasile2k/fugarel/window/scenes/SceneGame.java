@@ -11,10 +11,11 @@ import net.vasile2k.fugarel.window.Window;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 public class SceneGame extends Scene {
 
@@ -28,6 +29,8 @@ public class SceneGame extends Scene {
     private LocalPlayer player;
 
     private List<RemotePlayer> remotePlayers;
+
+    private Socket serverConnection;
 
     public SceneGame(String serverIp, String playerName){
         if(serverIp.contains(":")){
@@ -97,11 +100,19 @@ public class SceneGame extends Scene {
     }
 
     public void connect(){
-
+        try {
+            this.serverConnection = new Socket(this.ip, this.port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void disconnect(){
-
+        try {
+            this.serverConnection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

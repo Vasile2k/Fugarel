@@ -124,8 +124,7 @@ public class SceneGame extends Scene {
 
                 if(p instanceof NewPlayerPacket){
                     this.remotePlayers.add(new RemotePlayer(((NewPlayerPacket) p).id, ((NewPlayerPacket) p).name));
-                }
-                if(p instanceof RemovePlayerPacket){
+                }else if(p instanceof RemovePlayerPacket){
                     this.remotePlayers.removeIf(remotePlayer -> remotePlayer.getServerId() == ((RemovePlayerPacket) p).playerId);
                 }
             }
@@ -133,7 +132,12 @@ public class SceneGame extends Scene {
 
         this.serverSendingThread = new Thread(() -> {
             while (true){
-
+                
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -145,13 +149,13 @@ public class SceneGame extends Scene {
     public void disconnect(){
         try {
             this.serverReceivingThread.stop();
-            this.serverReceivingThread.join();
+//            this.serverReceivingThread.join();
 
             this.serverSendingThread.stop();
-            this.serverSendingThread.join();
+//            this.serverSendingThread.join();
 
             this.serverConnection.close();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

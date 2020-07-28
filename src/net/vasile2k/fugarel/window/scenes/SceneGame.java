@@ -6,6 +6,8 @@ import net.vasile2k.fugarel.Main;
 import net.vasile2k.fugarel.entity.*;
 import net.vasile2k.fugarel.map.Block;
 import net.vasile2k.fugarel.map.Map;
+import net.vasile2k.fugarel.networking.PacketDecoder;
+import net.vasile2k.fugarel.networking.packets.Packet;
 import net.vasile2k.fugarel.window.Window;
 
 import java.awt.*;
@@ -101,6 +103,7 @@ public class SceneGame extends Scene {
 
     public void connect(){
         try {
+            PacketDecoder.decodeFromBytes(null);
             this.serverConnection = new Socket(this.ip, this.port);
         } catch (IOException e) {
             e.printStackTrace();

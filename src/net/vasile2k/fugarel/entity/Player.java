@@ -15,4 +15,8 @@ public abstract class Player extends Entity {
      * @param camera
      */
     public abstract void render(Graphics g, Camera camera);
+
+    public String getName(){
+        return name;
+    }
 }

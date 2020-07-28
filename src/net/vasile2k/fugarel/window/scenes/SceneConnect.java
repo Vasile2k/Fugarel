@@ -74,7 +74,7 @@ public class SceneConnect extends Scene {
             }else{
                 if(Character.isLetter(e.getKeyChar())){
                     playerName += e.getKeyChar();
-                }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && ipOfServer.length() > 0){
+                }else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE && playerName.length() > 0){
                     playerName = playerName.substring(0, playerName.length() - 1);
                 }
             }

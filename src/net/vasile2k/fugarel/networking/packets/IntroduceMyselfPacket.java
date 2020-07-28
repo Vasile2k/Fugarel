@@ -7,7 +7,7 @@ import net.vasile2k.fugarel.networking.StringEncoder;
 @PacketSpec(packetId = IntroduceMyselfPacket.PACKET_ID)
 public class IntroduceMyselfPacket extends Packet {
 
-    private String name;
+    public String name;
 
     public static final byte PACKET_ID = 1;
 

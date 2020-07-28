@@ -7,7 +7,8 @@ import net.vasile2k.fugarel.entity.*;
 import net.vasile2k.fugarel.map.Block;
 import net.vasile2k.fugarel.map.Map;
 import net.vasile2k.fugarel.networking.PacketDecoder;
-import net.vasile2k.fugarel.networking.packets.Packet;
+import net.vasile2k.fugarel.networking.SocketPacketReader;
+import net.vasile2k.fugarel.networking.packets.*;
 import net.vasile2k.fugarel.window.Window;
 
 import java.awt.*;
@@ -33,6 +34,9 @@ public class SceneGame extends Scene {
     private List<RemotePlayer> remotePlayers;
 
     private Socket serverConnection;
+
+    private Thread serverReceivingThread;
+    private Thread serverSendingThread;
 
     public SceneGame(String serverIp, String playerName){
         if(serverIp.contains(":")){
@@ -103,19 +107,67 @@ public class SceneGame extends Scene {
 
     public void connect(){
         try {
-            PacketDecoder.decodeFromBytes(null);
             this.serverConnection = new Socket(this.ip, this.port);
         } catch (IOException e) {
+//            e.printStackTrace();
+            System.err.println("Can't connect to server!");
+        }
+
+        HelloClientPacket helloClientPacket = (HelloClientPacket) this.readPacket();
+
+        IntroduceMyselfPacket introduceMyselfPacket = new IntroduceMyselfPacket(this.player.getName());
+        this.sendPacket(introduceMyselfPacket);
+
+        this.serverReceivingThread = new Thread(() -> {
+            while (true){
+                Packet p = this.readPacket();
+
+                if(p instanceof NewPlayerPacket){
+                    this.remotePlayers.add(new RemotePlayer(((NewPlayerPacket) p).id, ((NewPlayerPacket) p).name));
+                }
+                if(p instanceof RemovePlayerPacket){
+                    this.remotePlayers.removeIf(remotePlayer -> remotePlayer.getServerId() == ((RemovePlayerPacket) p).playerId);
+                }
+            }
+        });
+
+        this.serverSendingThread = new Thread(() -> {
+            while (true){
+
+            }
+        });
+
+        this.serverReceivingThread.start();
+        this.serverSendingThread.start();
+    }
+
+    @SuppressWarnings("deprecation")
+    public void disconnect(){
+        try {
+            this.serverReceivingThread.stop();
+            this.serverReceivingThread.join();
+
+            this.serverSendingThread.stop();
+            this.serverSendingThread.join();
+
+            this.serverConnection.close();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void disconnect(){
+    private void sendPacket(Packet p){
         try {
-            this.serverConnection.close();
+            this.serverConnection.getOutputStream().write(p.toBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.err.println("Error sending packet!");
         }
+    }
+
+    private Packet readPacket(){
+        byte[] pack = SocketPacketReader.readPacketFromSocket(this.serverConnection);
+        return PacketDecoder.decodeFromBytes(pack);
     }
 
     @Override

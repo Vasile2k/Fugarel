@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -75,9 +76,20 @@ public class PacketDecoder {
     }
 
     public static Packet decodeFromBytes(byte[] serializedPacket){
-//        for(Class packetClass: packetClasses){
-////            if(packetClass.)
-//        }
+        byte packetId = Packet.getPacketId(serializedPacket);
+
+        Class<? extends Packet> packetClass = PacketDecoder.packetTypes.get(packetId);
+
+        if(packetClass != null){
+            try {
+                Packet p = packetClass.newInstance();
+                p.fromBytes(serializedPacket);
+                return p;
+            } catch (InstantiationException | IllegalAccessException | MalformedPacketException e) {
+                System.err.println("[Packet Decoder] Got an invalid packet with id " + packetId);
+            }
+        }
+
         return null;
     }
 

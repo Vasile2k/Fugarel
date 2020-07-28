@@ -26,7 +26,32 @@ public final class StringEncoder {
 
     public static byte[] encodeString(String input){
         byte[] in = input.getBytes(StandardCharsets.US_ASCII);
+        return encodeBytes(in);
+    }
 
+    public static String decodeString(byte[] input){
+        return new String(decodeBytes(input));
+    }
+
+    public static byte[] encodeInt(int value){
+        byte[] intBytes = new byte[] {
+                (byte)(value >>> 24),
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value
+        };
+        return encodeBytes(intBytes);
+    }
+
+    public static int decodeInt(byte[] input){
+        byte[] bytes = decodeBytes(input);
+        return  ((bytes[0] & 0xFF) << 24) |
+                ((bytes[1] & 0xFF) << 16) |
+                ((bytes[2] & 0xFF) << 8 ) |
+                ((bytes[3] & 0xFF));
+    }
+
+    public static byte[] encodeBytes(byte[] in){
         int occurencesToEscape = 0;
 
         for (byte b : in) {
@@ -46,34 +71,32 @@ public final class StringEncoder {
                 out[outIndex++] = b;
             }
         }
-
         return out;
     }
 
-    public static String decodeString(byte[] input){
+    public static byte[] decodeBytes(byte[] in){
         int occurencesEscaped = 0;
 
-        for (byte b : input) {
+        for (byte b : in) {
             if (b == ESCAPE_CHARACTER) {
                 occurencesEscaped++;
             }
         }
 
-        byte[] out = new byte[input.length - occurencesEscaped];
+        byte[] out = new byte[in.length - occurencesEscaped];
 
         int outIndex = 0;
-        for (int i = 0; i < input.length; ++i) {
-            if (input[i] == ESCAPE_CHARACTER) {
-                byte escaped = input[i + 1];
+        for (int i = 0; i < in.length; ++i) {
+            if (in[i] == ESCAPE_CHARACTER) {
+                byte escaped = in[i + 1];
                 byte unescaped = unescapeCharacter(escaped);
                 out[outIndex++] = unescaped;
                 i++;
             }else{
-                out[outIndex++] = input[i];
+                out[outIndex++] = in[i];
             }
         }
-
-        return new String(out);
+        return out;
     }
 
     private static byte unescapeCharacter(byte chr){

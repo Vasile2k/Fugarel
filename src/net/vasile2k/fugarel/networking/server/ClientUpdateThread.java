@@ -1,6 +1,10 @@
 package net.vasile2k.fugarel.networking.server;
 
+import net.vasile2k.fugarel.networking.packets.PlayerPositionPacket;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientUpdateThread implements Runnable {
 
@@ -14,14 +18,22 @@ public class ClientUpdateThread implements Runnable {
     public void run() {
         while(true){
 
-            // Create update packet with all player positions
+            // Create update packets with all player positions
 
-            // Broadcast it to clients only if the client is initialized(finished handshaking)
+            List<PlayerPositionPacket> packets = new ArrayList<>();
+            for(ServerClient serverClient: this.serverData.clients){
+                PlayerPositionPacket p = new PlayerPositionPacket(serverClient.id(), serverClient.x, serverClient.y);
+                packets.add(p);
+            }
+
+            // Broadcast them to clients only if the client is initialized(finished handshaking)
 
             for(ServerClient client: this.serverData.clients){
                 if(client.initialized){
                     try {
-                        client.socket.getOutputStream(); //.write(...something nice here...);
+                        for(PlayerPositionPacket p : packets){
+                            client.socket.getOutputStream().write(p.toBytes());
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

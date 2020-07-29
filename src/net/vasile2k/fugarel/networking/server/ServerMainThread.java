@@ -2,6 +2,7 @@ package net.vasile2k.fugarel.networking.server;
 
 import net.vasile2k.fugarel.networking.MalformedPacketException;
 import net.vasile2k.fugarel.networking.packets.NewPlayerPacket;
+import net.vasile2k.fugarel.networking.packets.PlayerPositionPacket;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -73,8 +73,8 @@ public class SceneGame extends Scene {
         float playerNewY = this.player.getY() + this.player.getVelY();
         float playerVelY = this.player.getVelY();
         playerVelY += 0.1F;
-        if(playerVelY > 10.0F){
-            playerVelY = 10.0F;
+        if(playerVelY > 30.0F){
+            playerVelY = 30.0F;
         }
 
         if(!CollisionHelper.playerIntersectsMap(this.player, this.level, playerNewX, playerNewY)){
@@ -84,11 +84,17 @@ public class SceneGame extends Scene {
         this.player.setVelY(playerVelY);
 
         // update camera
-        if(this.player.getX() < this.camera.getX() + Window.FRAME_WIDTH/4.0F){
-            this.camera.setX(this.camera.getX() - 1.0F);
+        if(this.player.getX() < this.camera.getX() + 3.0F*Window.FRAME_WIDTH/8.0F){
+            this.camera.setX(this.camera.getX() - 2.0F);
         }
-        if(this.player.getX() > this.camera.getX() + 3.0F*Window.FRAME_WIDTH/4.0F){
-            this.camera.setX(this.camera.getX() + 1.0F);
+        if(this.player.getX() > this.camera.getX() + 5.0F*Window.FRAME_WIDTH/8.0F){
+            this.camera.setX(this.camera.getX() + 2.0F);
+        }
+
+        if(this.player.getX() > 130*32 && this.player.getX() < 140*32){
+            this.player.setX(170.0F * 32.0F);
+            this.camera.setX(165.0F * 32.0F);
+            this.player.setY(100.0F);
         }
     }
 
@@ -98,11 +104,12 @@ public class SceneGame extends Scene {
         g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
 
         this.level.render(g, this.camera);
-        this.player.render(g, this.camera);
 
         for(RemotePlayer rp: this.remotePlayers){
             rp.render(g, this.camera);
         }
+
+        this.player.render(g, this.camera);
     }
 
     public void connect(){
@@ -126,13 +133,23 @@ public class SceneGame extends Scene {
                     this.remotePlayers.add(new RemotePlayer(((NewPlayerPacket) p).id, ((NewPlayerPacket) p).name));
                 }else if(p instanceof RemovePlayerPacket){
                     this.remotePlayers.removeIf(remotePlayer -> remotePlayer.getServerId() == ((RemovePlayerPacket) p).playerId);
+                }else if(p instanceof PlayerPositionPacket){
+                    this.remotePlayers.forEach(player -> {
+                        if(player.getServerId() == ((PlayerPositionPacket) p).playerId){
+                            player.setX(((PlayerPositionPacket) p).x);
+                            player.setY(((PlayerPositionPacket) p).y);
+                        }
+                    });
                 }
             }
         });
 
         this.serverSendingThread = new Thread(() -> {
             while (true){
-                
+
+                PlayerPositionPacket packet = new PlayerPositionPacket(0, (int)this.player.getX(), (int)this.player.getY());
+                this.sendPacket(packet);
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -186,10 +203,10 @@ public class SceneGame extends Scene {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_A){
-            this.player.setVelX(-2.0F);
+            this.player.setVelX(-3.0F);
         }
         if(e.getKeyCode() == KeyEvent.VK_D){
-            this.player.setVelX(2.0F);
+            this.player.setVelX(3.0F);
         }
         if(e.getKeyCode() == KeyEvent.VK_SPACE && !this.player.isJumping){
             this.player.setVelY(-7.0F);

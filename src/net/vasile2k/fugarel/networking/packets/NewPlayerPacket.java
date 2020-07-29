@@ -43,8 +43,8 @@ public class NewPlayerPacket extends Packet {
             assert bytes[0] == PACKET_BEGIN;
             assert bytes[1] == PACKET_ID;
 
-            byte[] encodedId = new byte[8];
-            System.arraycopy(bytes, 2, encodedId, 0, 8);
+            byte[] encodedId = new byte[bytes.length - 3];
+            System.arraycopy(bytes, 2, encodedId, 0, encodedId.length);
             this.id = StringEncoder.decodeInt(encodedId);
 
             int encodedIdLengthInBytes = 0;

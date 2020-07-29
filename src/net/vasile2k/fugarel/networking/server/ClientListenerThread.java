@@ -58,6 +58,10 @@ public class ClientListenerThread implements Runnable {
 
             Packet packet = PacketDecoder.decodeFromBytes(newPacket);
             // Do some shit with this packet
+            if(packet instanceof PlayerPositionPacket){
+                this.serverClient.x = ((PlayerPositionPacket) packet).x;
+                this.serverClient.y = ((PlayerPositionPacket) packet).y;
+            }
 
         }
 
